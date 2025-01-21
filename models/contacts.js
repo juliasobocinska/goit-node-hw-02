@@ -1,53 +1,37 @@
-const fs = require('fs/promises')
-const path =  require('path');
+const mongoose = require('mongoose');
+const Contact = require('./contactModel'); 
 
-const contactsPath = path.join(__dirname, "contacts.json");
+const DB_URI = 'mongodb+srv://dbUser:myPassword123@cluster0.l9efy.mongodb.net/db-contacts';
+
+mongoose.connect(DB_URI)
+  .then(() => console.log('Database connection successful'))
+  .catch(err => {
+    console.error('Database connection error:', err);
+    process.exit(1);
+  });
+
 
 const listContacts = async () => {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  return JSON.parse(data);
-}
-
-const getContactById = async (contactId) => {
-  const contacts = await listContacts();
-  return contacts.find((contact) => contact.id === contactId) || null;
-}
-
-const removeContact = async (contactId) => {
-  const contacts = await listContacts();
-  const updatedLists = contacts.filter(contact => contact.id !== contactId); 
-  
-  await fs.writeFile(contactsPath, JSON.stringify(updatedLists)); 
-  return updatedLists;
-}
-
-const addContact = async (body) => {
-  const contacts = await listContacts();
-  const newContact = {
-    id: (contacts.length + 1).toString(),
-    ...body
-  };
-  contacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts));
-  return newContact;
-}
-
-const updateContact = async (contactId, body) => {
-  const contacts = await listContacts(); 
-  
-  const contactIndex = contacts.findIndex(contact => contact.id === contactId);
-
-  if (contactIndex === -1) {
-    return { message: 'Contact not found' };
-  }
-
-  contacts[contactIndex] = { ...contacts[contactIndex], ...body };
-
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-
-  return contacts;
+  return await Contact.find(); 
 };
 
+const getContactById = async (contactId) => {
+  return await Contact.findById(contactId); 
+};
+
+const removeContact = async (contactId) => {
+  return await Contact.findByIdAndDelete(contactId); 
+};
+
+const addContact = async (body) => {
+  const newContact = new Contact(body); 
+  await newContact.save(); 
+  return newContact;
+};
+
+const updateContact = async (contactId, body) => {
+  return await Contact.findByIdAndUpdate(contactId, body, { new: true }); 
+};
 
 module.exports = {
   listContacts,
@@ -55,6 +39,4 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
-}
-
-
+};
