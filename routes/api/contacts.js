@@ -7,10 +7,9 @@ const {
   addContact, 
   removeContact, 
   updateContact, 
-  updateStatusContact 
+  updateContact
 } = require('../../models/contacts');
 
-// Pobranie wszystkich kontaktów
 router.get('/', async (req, res, next) => {
   try {
     const contacts = await listContacts();
@@ -20,7 +19,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// Pobranie kontaktu po ID
 router.get('/:id', async (req, res, next) => {
   try {
     const contact = await getContactById(req.params.id);
@@ -33,7 +31,6 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// Dodanie nowego kontaktu
 router.post('/', async (req, res, next) => {
   try {
     const { error } = contactSchema.validate(req.body);
@@ -47,7 +44,6 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// Usunięcie kontaktu po ID
 router.delete('/:id', async (req, res, next) => {
   try {
     const result = await removeContact(req.params.id);
@@ -60,7 +56,6 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-// Aktualizacja statusu "favorite"
 router.patch('/:contactId/favorite', async (req, res, next) => {
   try {
     const { contactId } = req.params;
@@ -82,7 +77,6 @@ router.patch('/:contactId/favorite', async (req, res, next) => {
   }
 });
 
-// Aktualizacja kontaktu po ID
 router.put('/:id', async (req, res, next) => {
   try {
     const { error } = contactSchema.validate(req.body);
