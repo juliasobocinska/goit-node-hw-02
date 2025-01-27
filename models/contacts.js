@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Contact = require('./contactModel');
-const connectDB = require('./db');
+const connectDB = require('../config/db');
 
 connectDB();
 
@@ -26,10 +26,19 @@ const updateContact = async (contactId, body) => {
   return await Contact.findByIdAndUpdate(contactId, body, { new: true });
 };
 
+const updateStatusContact = async (contactId, { favorite }) => {
+  return await Contact.findByIdAndUpdate(
+    contactId,
+    { favorite },
+    { new: true, runValidators: true }
+  );
+};
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact, 
 };

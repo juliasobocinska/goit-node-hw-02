@@ -7,7 +7,7 @@ const {
   addContact, 
   removeContact, 
   updateContact, 
-  updateContact
+  updateStatusContact 
 } = require('../../models/contacts');
 
 router.get('/', async (req, res, next) => {
@@ -61,7 +61,7 @@ router.patch('/:contactId/favorite', async (req, res, next) => {
     const { contactId } = req.params;
     const { favorite } = req.body;
 
-    if ( favorite === 'undefined') {
+    if (typeof favorite === 'undefined') {
       return res.status(400).json({ message: 'missing field favorite' });
     }
 
