@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
+const { required } = require('joi');
+const gravatar = require('gravatar');
 
 const userSchema = new Schema({
     password: {
@@ -22,6 +24,10 @@ const userSchema = new Schema({
         type: String,
         default: null,
     },
+      avatarURL: {
+        type: String,
+        required: true,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -29,6 +35,14 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, 10); 
     next();
 });
+
+userSchema.pre('save', function (next) {
+    if (this.isNew && !this.avatarURL) {
+      const avatar = gravatar.url(this.email, { s: '200', r: 'pg', d: 'mm' });
+      this.avatarURL = avatar;
+    }
+    next();
+  });
 
 userSchema.methods.isValidPassword = async function (password) {
     return await bcrypt.compare(password, this.password);

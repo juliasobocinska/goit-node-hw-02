@@ -23,7 +23,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// Pobieranie kontaktu po ID
 router.get('/:id', async (req, res, next) => {
   try {
     const userId = req.user._id;
