@@ -13,6 +13,7 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
   const { error } = signupSchema.validate(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).json({ message: error.message });
   }
 
@@ -111,11 +112,11 @@ router.patch('/avatars', upload, async (req, res) => {
 
   try {
     const { _id } = req.user;
-    const avatarPath = path.join(__dirname, '../', 'tmp', req.file.filename);
+    const avatarPath = path.join(__dirname, '../../', 'tmp', req.file.filename);
 
     const avatar = await jimp.read(avatarPath);
     await avatar.resize(250, 250);
-    const publicDir = path.join(__dirname, '../', 'public', 'avatars');
+    const publicDir = path.resolve(__dirname, '../../', 'public', 'avatars');
     
     if (!fs.existsSync(publicDir)) {
       fs.mkdirSync(publicDir, { recursive: true });
