@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
 const { required } = require('joi');
 const gravatar = require('gravatar');
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new Schema({
     password: {
@@ -27,13 +28,15 @@ const userSchema = new Schema({
       avatarURL: {
         type: String,
         required: true,
+        default: '',
   },
   verify: {
     type: Boolean,
     default: false,
   },
   verificationToken: {
-    type: Boolean,
+    type: String,
+    default: uuidv4,
     required: [true, 'Verify token is required'],
   }
 });
@@ -46,8 +49,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('save', function (next) {
     if (this.isNew && !this.avatarURL) {
-      const avatar = gravatar.url(this.email, { s: '200', r: 'pg', d: 'mm' });
-      this.avatarURL = avatar;
+      this.avatarURL = gravatar.url(this.email, { s: '200', r: 'pg', d: 'mm' });
     }
     next();
   });

@@ -35,7 +35,7 @@ router.post('/signup', async (req, res) => {
       email,
       password: hashedPswd,
       subscription: 'starter',
-      avatarURL: '',
+      avatarURL: undefined,
       verificationToken,
       verify: false,
     });
@@ -59,14 +59,16 @@ router.post('/signup', async (req, res) => {
              <a href="http://localhost:3000/users/verify/${verificationToken}">Verify e-mail</a>`
     };
 
-    transporter.sendMail( mailOptions, ( error, info) => {
-      if ( error ) {
-        console.error('E-mail error', error);
-        return res.status(500).json({ message: 'Error sending verification email' })
-      } else {
-        console.log('E-mail sent:', info.response);
-      }
-    });
+    //transporter.sendMail( mailOptions, ( error, info) => {
+      // if ( error ) {
+       // console.error('E-mail error', error);
+       // return res.status(500).json({ message: 'Error sending verification email' })
+     // } else {
+       // console.log('E-mail sent:', info.response);
+     // }
+   // });
+
+   console.log('Verification token for ${newUser.email}: ${verificationToken}');
 
     res.status(201).json({
       user: {
